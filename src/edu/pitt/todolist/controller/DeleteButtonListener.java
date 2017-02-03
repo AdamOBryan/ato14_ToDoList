@@ -21,15 +21,16 @@ public class DeleteButtonListener implements ActionListener {
 		//ListModel model = list.getModel();
 
 		// Get all the selected items using the indices
-	    for (int i = 0; i < selectedItems.length; i++) {
+	    // for (int i = 0; i < selectedItems.length; i++) {
+		for (int i = selectedItems.length-1; i >=0; i--) {
 	    	if(selectedItems[i]>=0)
 	    		controller.getModel().deleteListItem((String) controller.getView().getListModel().remove(selectedItems[i]));
 	    }
 
 
 		//reset view
-	    /*
-	    controller.getModel().loadDbList();*/
+	    /**/
+	    controller.getModel().loadDbList();
 		controller.getView().resetListPanel();
     }
 }

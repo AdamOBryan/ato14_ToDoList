@@ -15,8 +15,8 @@ public class AddButtonListener implements ActionListener {
 		controller.getView().getListModel().add(desc);
 		controller.getModel().addListItem(desc);
 		//reset view
-		/*
-	    controller.getModel().loadDbList();*/
+		/**/
+	    controller.getModel().loadDbList();
 		controller.getView().resetListPanel();
     }
 }
