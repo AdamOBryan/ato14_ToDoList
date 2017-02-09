@@ -16,16 +16,21 @@ import javax.swing.JTextField;
 
 import edu.pitt.todolist.model.ListItem;
 import edu.pitt.todolist.model.Model;
+import edu.pitt.todolist.model.User;
 
 public class View {
 	private JFrame window;
 	private JButton addButton;
 	private JButton deleteButton;
 	private JList<Vector<String>> todoList;
+	private JList<Vector<User>> userList;
 	private JTextField textField;
 	private Model model;
+	private Model userModel;
 	private Vector<String> listModel;
+	private Vector<String> userListModel;
 	private JPanel listPanel;
+	private JPanel userListPanel;
 	private JLabel label;
 	private JPanel panel;
 	
@@ -35,39 +40,64 @@ public class View {
 		panel = new JPanel();
 		panel.setLayout(new FlowLayout());
 
-	    listPanel = new JPanel();
-	    /*resetListPanel();
+	    /*
+	    resetListPanel();
 	}
-	
-	   public void resetListPanel(){
-	   */
+	  public void resetListPanel(){
+	  */
+		
+		listPanel = new JPanel();
+		userListPanel = new JPanel();
+	   
+		//build todo list
 	    listModel = new Vector<String>();
 	    todoList = new JList(listModel);
 	    todoList.setPreferredSize(new Dimension(200, 200));
-	    /*
-	    todoList.setMaximumSize(new Dimension(480, 500));
-	    todoList.setMinimumSize(new Dimension(480, 400));
-	    */
+
+	    //add items to todo list
 	    for(ListItem l : model.getList()){
 	    	listModel.add(l.getDescription());
 	    }
 	    
+		//build user list
+	    userListModel = new Vector<String>();
+	    userList = new JList(userListModel);
+	    todoList.setPreferredSize(new Dimension(200, 200));
+
+	    //add items to todo list
+	    for(User u : model.getUserList()){
+	    	userListModel.add(u.getName());
+	    }
+	    
+	    
+	    //start build panel
+	    
+	    //add list items
 	    listPanel.add(todoList);
 	    panel.add(listPanel);
 
+	    //add label
 		label = new JLabel("Please enter item here:");
 		panel.add(label);
 		textField = new JTextField("list item");
 		panel.add(textField);
 
+		
+		// add add button
 		addButton = new JButton();
 		addButton.setText("Add");
 		panel.add(addButton);
 	    
+		//add delete button
 		deleteButton = new JButton();
 		deleteButton.setText("Delete");
 		panel.add(deleteButton);
-	    
+		
+		 userListPanel.add(userList);
+		 panel.add(userListPanel);
+		
+		
+	    // end build panel
 		window.add(panel);
 		window.setSize(500, 500);
 		window.setLocationRelativeTo(null);

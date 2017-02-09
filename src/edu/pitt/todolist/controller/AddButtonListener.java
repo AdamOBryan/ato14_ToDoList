@@ -12,8 +12,10 @@ public class AddButtonListener implements ActionListener {
 	
 	public void actionPerformed(ActionEvent e) {
 		String desc = controller.getView().getInput().getText();
+		int selectedItem =  controller.getView().getTodoList().getSelectedIndex();
+		
 		controller.getView().getListModel().add(desc);
-		controller.getModel().addListItem(desc);
+		//controller.getModel().addListItem(desc, selectedItem);
 		//reset view
 		/**/
 	    controller.getModel().loadDbList();

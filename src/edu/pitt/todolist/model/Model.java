@@ -155,7 +155,34 @@ public class Model {
 			}
 	}// end addListItem
 	
-	
+	public void addListItem(String description, int userId) {
+		
+		/*  String to insert item into database  - works*/
+		 String insertListItem = "INSERT INTO todoList (itemDescription)"+ 
+				 "VALUES ('"+ description + "');";
+		 
+			try {
+				statement.executeUpdate(insertListItem);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("add list item error");
+				e.printStackTrace();
+			}
+			
+			try {
+				String itemId = "SELECT id FROM todoList WHERE itemDescription="+ description+ "');";
+				rs = statement.executeQuery(itemId);	
+				int iId = rs.getInt(itemId);
+				
+				String insertJunction = "INSERT INTO user_todo (userId, itemId)"+
+						 "VALUES ('"+userId+","+iId+ "');";
+				statement.executeUpdate(insertJunction);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("add list item error");
+				e.printStackTrace();
+			}
+	}// end addListItem
 	
 	
 	/*This method deletes the selected list items to be deleted from the database and then reloads the current todo list*/
@@ -188,6 +215,12 @@ public class Model {
 	public Vector<ListItem> getList() {
 		return todoList;
 	}
+	
+	/* this function returns the user list in a vector*/
+	public Vector<User> getUserList() {
+		return userList;
+	}
+
 
 
 }// End Model Class

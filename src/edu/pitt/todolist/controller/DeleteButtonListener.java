@@ -17,7 +17,7 @@ public class DeleteButtonListener implements ActionListener {
 	
 	public void actionPerformed(ActionEvent e) {
 		int[] selectedItems =  controller.getView().getTodoList().getSelectedIndices();
-		System.out.println(selectedItems.toString());
+		//System.out.println(selectedItems.toString());
 		//ListModel model = list.getModel();
 
 		// Get all the selected items using the indices
