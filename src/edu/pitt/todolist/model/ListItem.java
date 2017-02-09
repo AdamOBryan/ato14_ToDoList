@@ -13,12 +13,14 @@ public class ListItem {
 		this.timestamp = timestamp;
 		this.id = id;
 	}
+	
 	public ListItem(String description) {
 		this.description = description;
 		timestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
 		
 	}
 
+	
 	public String getDescription() {
 		return description;
 	}

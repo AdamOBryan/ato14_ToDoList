@@ -1,12 +1,16 @@
 package edu.pitt.todolist.model;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Vector;
 import java.sql.*;
 import java.net.URL;
 
 public class Model {
 	private Vector<ListItem> todoList;
+	private Vector<User> userList;
+	private HashMap<User, ListItem> userTodo;
+	
 	private Connection connection;
 	private Statement statement = null;
 	private ResultSet rs = null;
@@ -21,6 +25,8 @@ public class Model {
 	
 	public Model() {
 		this.todoList = new Vector<ListItem>();
+		this.userList = new Vector<User>();
+		this.userTodo = new HashMap<User, ListItem>();
 		
 		//Start sql connection
 		try {
@@ -56,7 +62,18 @@ public class Model {
 	
 	
 	public void loadDbList(){
+		loadTodoList();
+		loadUserList();
+		loadJunctions();
+	}
+	
+	
+	
+	/* This function loads the todoList table of items into a vector of ListItems*/
+	public void loadTodoList(){
+		
 		this.todoList.clear();
+		
 		/*  String to get all list items from database*/
 		 String getAll = "SELECT * FROM todoList;";
 		 
@@ -77,7 +94,71 @@ public class Model {
 			e.printStackTrace();
 		}
 		
-	}// end loadDbList
+	}// end loadTodoList
+	
+	
+	/* This function loads the user table of items into a vector of Users*/
+	public void loadUserList(){
+		
+		this.userList.clear();
+		
+		/*  String to get all list items from database*/
+		 String getAll = "SELECT * FROM user;";
+		 
+		try {
+			rs = statement.executeQuery(getAll);
+			System.out.println("executing user");
+			while(rs.next()){
+				System.out.println(userList.toString());
+				this.userList.add(new User(rs.getString("firstName"), rs.getString("lastName")));
+				for( User l : userList){
+					System.out.println(l.getDescription());
+					
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("load user db error");
+			e.printStackTrace();
+		}
+		
+	}// end loadUserList
+	
+	
+	
+	
+	
+	
+	/* This function loads the user_todo table of items into a HashMap <userID, todoID>  */
+	public void loadJunctions(){
+		
+		this.userTodo.clear();
+		
+		/*  String to get all list items from database*/
+		 String getAll = "SELECT * FROM todoList;";
+		 
+		try {
+			rs = statement.executeQuery(getAll);
+			System.out.println("executing");
+			while(rs.next()){
+				System.out.println(userTodo.toString());
+				
+				int userID = rs.getInt("userId");
+				int todoID = rs.getInt("todoId");
+				
+				this.userTodo.put(rs.getInt("userId"), rs.getInt("todoId"));
+				for( ListItem l : userTodo){
+					System.out.println(l.getDescription());
+					
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("load user_Todo db error");
+			e.printStackTrace();
+		}
+		
+	}// end loadTodoList
 	
 	
 	
