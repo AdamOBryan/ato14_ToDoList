@@ -9,24 +9,17 @@ import java.net.URL;
 public class Model {
 	private Vector<ListItem> todoList;
 	private Vector<User> userList;
-	private HashMap<User, ListItem> userTodo;
+	private HashMap<User, Vector<ListItem>> userTodo;
 	
 	private Connection connection;
 	private Statement statement = null;
 	private ResultSet rs = null;
 	
-	
-	/* used to add table
-	 String buildTable = "CREATE TABLE todoList("
-	 		+ "itemId INT PRIMARY KEY NOT NULL AUTO_INCREMENT,"
-	 		+ "itemDescription VARCHAR(100) NOT NULL);";
-	 */
-	
-	
+
 	public Model() {
 		this.todoList = new Vector<ListItem>();
 		this.userList = new Vector<User>();
-		this.userTodo = new HashMap<User, ListItem>();
+		this.userTodo = new HashMap<User, Vector<ListItem>>();
 		
 		//Start sql connection
 		try {
@@ -73,20 +66,13 @@ public class Model {
 	public void loadTodoList(){
 		
 		this.todoList.clear();
-		
 		/*  String to get all list items from database*/
 		 String getAll = "SELECT * FROM todoList;";
 		 
 		try {
 			rs = statement.executeQuery(getAll);
-			System.out.println("executing");
 			while(rs.next()){
-				System.out.println(todoList.toString());
-				this.todoList.add(new ListItem(rs.getString("itemDescription"), rs.getTimestamp("time_stamp"), rs.getInt("itemId")));
-				for( ListItem l : todoList){
-					System.out.println(l.getDescription());
-					
-				}
+				this.todoList.add(new ListItem(rs.getString("itemDescription"), rs.getTimestamp("time_stamp"), rs.getInt("id")));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -96,6 +82,7 @@ public class Model {
 		
 	}// end loadTodoList
 	
+
 	
 	/* This function loads the user table of items into a vector of Users*/
 	public void loadUserList(){
@@ -103,28 +90,19 @@ public class Model {
 		this.userList.clear();
 		
 		/*  String to get all list items from database*/
-		 String getAll = "SELECT * FROM user;";
+		 String getAllUsers = "SELECT * FROM user;";
 		 
 		try {
-			rs = statement.executeQuery(getAll);
-			System.out.println("executing user");
+			rs = statement.executeQuery(getAllUsers);
 			while(rs.next()){
-				System.out.println(userList.toString());
-				this.userList.add(new User(rs.getString("firstName"), rs.getString("lastName")));
-				for( User l : userList){
-					System.out.println(l.getDescription());
-					
-				}
+				this.userList.add(new User(rs.getString("firstName"), rs.getString("lastName"), rs.getInt("id")));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("load user db error");
 			e.printStackTrace();
-		}
-		
+		}	
 	}// end loadUserList
-	
-	
 	
 	
 	
@@ -133,32 +111,31 @@ public class Model {
 	public void loadJunctions(){
 		
 		this.userTodo.clear();
+		 /*Get all list items owner is tied to and recreate junction table as a hash map*/
+		for (User user : this.userList){
+			/*  String to get all list items from database for user*/
+			 String getUserItems = "SELECT t.* FROM user u " 
+								+"JOIN user_todo ut ON u.id = ut.userId "
+								+"JOIN todoList t ON ut.todoId = t.id "
+								+"WHERE u.id = "+ user.getID() + ";";
 		
-		/*  String to get all list items from database*/
-		 String getAll = "SELECT * FROM todoList;";
-		 
-		try {
-			rs = statement.executeQuery(getAll);
-			System.out.println("executing");
-			while(rs.next()){
-				System.out.println(userTodo.toString());
-				
-				int userID = rs.getInt("userId");
-				int todoID = rs.getInt("todoId");
-				
-				this.userTodo.put(rs.getInt("userId"), rs.getInt("todoId"));
-				for( ListItem l : userTodo){
-					System.out.println(l.getDescription());
-					
+			 try {
+				rs = statement.executeQuery(getUserItems);
+				Vector<ListItem> userItems = new Vector<ListItem>();
+				while(rs.next()){
+					//add list item to user's list vector
+					userItems.add(new ListItem(rs.getString("itemDescription"), rs.getTimestamp("time_stamp"), rs.getInt("id")));
 				}
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			System.out.println("load user_Todo db error");
-			e.printStackTrace();
-		}
+				this.userTodo.put(user, userItems);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					System.out.println("load user_Todo db error");
+					e.printStackTrace();
+				}
+
+		}//end for loop
 		
-	}// end loadTodoList
+	}// end loadJunctions
 	
 	
 	
@@ -169,7 +146,6 @@ public class Model {
 		/*  String to insert item into database  - works*/
 		 String insertListItem = "INSERT INTO todoList (itemDescription)"+ 
 				 "VALUES ('"+ description + "');";
-		 System.out.println(insertListItem);
 			try {
 				statement.executeUpdate(insertListItem);
 			} catch (SQLException e) {
