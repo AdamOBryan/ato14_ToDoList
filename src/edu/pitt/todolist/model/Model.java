@@ -1,10 +1,12 @@
 package edu.pitt.todolist.model;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Vector;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import java.sql.*;
-import java.net.URL;
+
 
 public class Model {
 	private Vector<ListItem> todoList;
@@ -134,15 +136,32 @@ public class Model {
 				}
 
 		}//end for loop
-		
+		System.out.println(userTodo.toString());
 	}// end loadJunctions
 	
 	
 	
 	
 	
-	public void addListItem(String description) {
+	public void addListItem(String description, DefaultMutableTreeNode parent) {
+		int parentId = 0;
+		int newItemId = 0;
 		
+		String parentDescription = (String) parent.getUserObject();
+		for(User currentUsers : userList){
+			if (currentUsers.getName() == parentDescription){
+				System.out.println(currentUsers.getName());
+				parentId = currentUsers.getId();
+				System.out.println(currentUsers.getId());
+			}
+		}
+		if(parentId == 0){
+			for(ListItem currentItem : todoList){
+				if (currentItem.getDescription() == parentDescription){
+					parentId = currentItem.getId();
+				}
+			}
+		}
 		/*  String to insert item into database  - works*/
 		 String insertListItem = "INSERT INTO todoList (itemDescription)"+ 
 				 "VALUES ('"+ description + "');";
@@ -153,6 +172,34 @@ public class Model {
 				System.out.println("add list item error");
 				e.printStackTrace();
 			}
+			
+			/*  get new user id*/
+			 String getId = "SELECT id FROM todoList WHERE itemDescription = '"+description+"';";
+				try {
+					ResultSet rs2;
+					rs2 = statement.executeQuery(getId);
+					if(rs2.next()){
+					newItemId = rs2.getInt("id");
+					System.out.println(newItemId);
+
+					System.out.println(parentId);
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					System.out.println("add list item error");
+					e.printStackTrace();
+				}
+			
+			/*  String to insert connection to junction table  - works*/
+			 String insertJunction = "INSERT INTO user_todo (userId, todoId)"+ 
+					 "VALUES ('"+ parentId +", "+ newItemId + "');";
+				try {
+					statement.executeUpdate(insertListItem);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					System.out.println("add list item error");
+					e.printStackTrace();
+				}
 	}// end addListItem
 	
 	public void addListItem(String description, int userId) {
@@ -179,7 +226,7 @@ public class Model {
 				statement.executeUpdate(insertJunction);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				System.out.println("add list item error");
+				System.out.println("parent id error item error");
 				e.printStackTrace();
 			}
 	}// end addListItem
@@ -203,13 +250,25 @@ public class Model {
 				int backInt = statement.executeUpdate(deleteListItem);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				System.out.println("delete list itemerror");
+				System.out.println("delete list item error");
 				e.printStackTrace();
 			}
 		}
 	}// end deleteListItem
 
-	
+	public void addUser(String fName, String lName) {
+		
+		/*  String to insert item into database  - works*/
+		 String insertListItem = "INSERT INTO user (firstName, lastName)"+ 
+				 "VALUES ('"+ fName +", " +  lName + "');";
+			try {
+				statement.executeUpdate(insertListItem);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("add list item error");
+				e.printStackTrace();
+			}
+	}// end addListItem
 	
 	/* this function returns the to do list in a vector*/
 	public Vector<ListItem> getList() {
@@ -220,7 +279,10 @@ public class Model {
 	public Vector<User> getUserList() {
 		return userList;
 	}
-
-
+	
+	
+	public HashMap<User, Vector<ListItem>> getUserTodoMap(){
+		return userTodo;
+	}
 
 }// End Model Class
