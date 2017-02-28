@@ -20,5 +20,6 @@ public class DeleteUserButtonListener implements ActionListener {
 		rootNode.add(selectedItem);
 		
 		controller.getModel().deleteUser(userName);
+		controller.getView().getTodoTree().updateUI();
     }
 }

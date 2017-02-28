@@ -21,5 +21,6 @@ public class DeleteItemButtonListener implements ActionListener {
 	    
 	    
 		controller.getModel().deleteListItem(selectedItem);
+		controller.getView().getTodoTree().updateUI();
     }
 }

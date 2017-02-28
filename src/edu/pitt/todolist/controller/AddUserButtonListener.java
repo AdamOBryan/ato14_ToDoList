@@ -23,5 +23,6 @@ public class AddUserButtonListener implements ActionListener {
 		DefaultMutableTreeNode newUserNode = new DefaultMutableTreeNode(newUserFirst+" "+ newUserLast);
 		DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) controller.getView().getTodoTree().getModel().getRoot();
 		rootNode.add(newUserNode);
+		controller.getView().getTodoTree().updateUI();
     }
 }
