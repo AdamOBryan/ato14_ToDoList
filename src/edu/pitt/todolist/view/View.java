@@ -118,6 +118,9 @@ public class View {
         //create the tree by passing in the root node
         todoTree = new JTree(root);
         
+        //hide root node
+        todoTree.setRootVisible(false);
+        
         // add JTree to tree panel
         treePanel.add(todoTree);
         
@@ -199,7 +202,7 @@ public class View {
 	     */
 		
 		// Delete User Warning Label
-		deleteUserlabel = new JLabel("Please select which item you want to delete from the Todo Item Tree to the left.");
+		deleteUserlabel = new JLabel("Please select which USER you want to delete from the Todo Item Tree to the left.");
 		actionPanel.add(deleteUserlabel);
 		
 		// Delete User Button

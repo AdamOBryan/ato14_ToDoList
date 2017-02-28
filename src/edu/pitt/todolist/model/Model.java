@@ -273,6 +273,30 @@ public class Model {
 			}
 	}// end addListItem
 	
+	/*This method deletes the selected list items to be deleted from the database and then reloads the current todo list*/
+	public void deleteUser(String description) {
+		Vector<User> itemsToDelete = new Vector<User>();
+		
+		for (User users : userList) {
+			if (users.getName().equals(description)) {
+				itemsToDelete.add(users);
+			}
+		}
+		
+		for (User user : itemsToDelete) {
+			//todoList.remove(item);
+			/*  String to delete item from database*/
+			String deleteListItem = "DELETE FROM user WHERE firstName = '"+ user.getFirstName() + "' AND lastName = '"+ user.getLastName()+"';";
+			try {
+				int backInt = statement.executeUpdate(deleteListItem);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("delete list item error");
+				e.printStackTrace();
+			}
+		}
+	}// end deleteListItem
+	
 	/* this function returns the to do list in a vector*/
 	public Vector<ListItem> getList() {
 		return todoList;

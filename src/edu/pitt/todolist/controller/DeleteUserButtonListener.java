@@ -17,7 +17,7 @@ public class DeleteUserButtonListener implements ActionListener {
 	    DefaultMutableTreeNode selectedItem = (DefaultMutableTreeNode) controller.getView().getTodoTree().getLastSelectedPathComponent();
 	    String userName = (String)selectedItem.getUserObject();
 	    DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) controller.getView().getTodoTree().getModel().getRoot();
-		rootNode.add(selectedItem);
+		rootNode.remove(selectedItem);
 		
 		controller.getModel().deleteUser(userName);
 		controller.getView().getTodoTree().updateUI();

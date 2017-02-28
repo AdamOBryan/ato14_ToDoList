@@ -20,7 +20,7 @@ public class DeleteItemButtonListener implements ActionListener {
 	    selectedItemParent.remove(selectedItem);
 	    
 	    
-		controller.getModel().deleteListItem(selectedItem);
+		controller.getModel().deleteListItem((String) selectedItem.getUserObject());
 		controller.getView().getTodoTree().updateUI();
     }
 }
