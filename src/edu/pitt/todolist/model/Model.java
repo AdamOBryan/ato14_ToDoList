@@ -136,7 +136,7 @@ public class Model {
 				}
 
 		}//end for loop
-		System.out.println(userTodo.toString());
+		//System.out.println(userTodo.toString());
 	}// end loadJunctions
 	
 	
@@ -148,11 +148,14 @@ public class Model {
 		int newItemId = 0;
 		
 		String parentDescription = (String) parent.getUserObject();
+
+		System.out.println("parent desc: "+parentDescription);
 		for(User currentUsers : userList){
-			if (currentUsers.getName() == parentDescription){
-				System.out.println(currentUsers.getName());
+			System.out.println("parent desc: "+currentUsers.getName());
+			if (currentUsers.getName().equals(parentDescription)){
+				System.out.println("parent name: "+currentUsers.getName());
 				parentId = currentUsers.getId();
-				System.out.println(currentUsers.getId());
+				System.out.println("parent id: "+currentUsers.getId());
 			}
 		}
 		if(parentId == 0){
@@ -260,12 +263,12 @@ public class Model {
 		
 		/*  String to insert item into database  - works*/
 		 String insertListItem = "INSERT INTO user (firstName, lastName)"+ 
-				 "VALUES ('"+ fName +", " +  lName + "');";
+				 "VALUES ('"+ fName +"', '" +  lName + "');";
 			try {
 				statement.executeUpdate(insertListItem);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				System.out.println("add list item error");
+				System.out.println("add user item error");
 				e.printStackTrace();
 			}
 	}// end addListItem
